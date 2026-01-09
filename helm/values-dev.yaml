@@ -1,0 +1,47 @@
+replicaCount: 3
+
+image:
+  repository: dotnetacrprod.azurecr.io/dotnet-app
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: dotnet.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: dotnet-tls
+      hosts:
+        - dotnet.example.com
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+env:
+  - name: ASPNETCORE_ENVIRONMENT
+    value: Production
+  - name: DB_CONNECTION
+    valueFrom:
+      secretKeyRef:
+        name: app-secrets
+        key: db-connection
+

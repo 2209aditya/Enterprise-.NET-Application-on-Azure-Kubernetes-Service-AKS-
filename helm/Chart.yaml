@@ -1,0 +1,7 @@
+apiVersion: v2
+name: dotnet-app
+description: Enterprise .NET application Helm chart for AKS
+type: application
+version: 1.0.0
+appVersion: "8.0"
+
